@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AH Tools Hub - Your Ultimate Tool Collection</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>AH Tools Hub</h1>
+                <p>Your one-stop solution for all online tools</p>
+            </div>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search tools...">
+                <button id="searchBtn"><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <nav>
+        <div class="container">
+            <ul class="categories">
+                <li class="active" data-category="all">All Tools</li>
+                <!-- Categories will be loaded from JSON -->
+            </ul>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="tools-container" id="toolsContainer">
+            <!-- Tools will be loaded here from JSON -->
+            <div class="loading">Loading tools...</div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About AH Tools Hub</h3>
+                    <p>A collection of free online tools to make your life easier. All tools are carefully selected and organized for your convenience.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                        <li><a href="terms-conditions.html">Terms & Conditions</a></li>
+                        <li><a href="contact-us.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Connect With Us</h3>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 AH Tools Hub. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
