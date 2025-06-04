@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Random Number Generator | AH Tools Hub</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --bg: #f4f6f8;
+            --text: #333;
+            --card-bg: #fff;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --btn-bg: #2c3e50;
+            --btn-color: #fff;
+            --btn-hover-bg: #1a2735;
+            --reset-btn-bg: #e74c3c;
+            --reset-btn-hover: #c0392b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: var(--primary);
+            color: #fff;
+            padding: 1.5rem 2rem;
+            text-align: center;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem 1rem;
+        }
+
+        .tool-card {
+            background-color: var(--card-bg);
+            padding: 3rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .tool-card h1 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin: 0.7rem 0 0.3rem;
+            font-weight: 600;
+            text-align: left;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 0.5rem;
+            font-size: 1rem;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            margin-bottom: 1rem;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: var(--btn-bg);
+            border: none;
+            color: var(--btn-color);
+            padding: 0.7rem 1.6rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+            margin-top: 1rem;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: var(--btn-hover-bg);
+        }
+
+        button.reset-btn {
+            background-color: var(--reset-btn-bg);
+            margin-top: 0.8rem;
+        }
+
+        button.reset-btn:hover {
+            background-color: var(--reset-btn-hover);
+        }
+
+        #result {
+            margin-top: 1.5rem;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            min-height: 50px;
+            user-select: text;
+            word-break: break-word;
+        }
+
+        footer {
+            background-color: #ecf0f1;
+            text-align: center;
+            padding: 1rem;
+            font-size: 0.9rem;
+            color: #555;
+            margin-top: auto;
+        }
+
+        @media (max-width: 480px) {
+            .tool-card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Random Number Generator - AH Tools Hub</h1>
+        <p>Generate random numbers within your desired range 🎲</p>
+    </header>
+
+    <main>
+        <div class="tool-card">
+            <label for="minNumber">Minimum Number</label>
+            <input type="number" id="minNumber" placeholder="Enter minimum number" />
+
+            <label for="maxNumber">Maximum Number</label>
+            <input type="number" id="maxNumber" placeholder="Enter maximum number" />
+
+            <button onclick="generateRandomNumber()">Generate Number</button>
+            <button class="reset-btn" type="button" onclick="resetFields()">Reset</button>
+
+            <div id="result"></div>
+        </div>
+    </main>
+
+    <footer>
+        &copy; 2025 AH Tools Hub. All rights reserved.
+    </footer>
+
+    <script>
+        function generateRandomNumber() {
+            const minInput = document.getElementById('minNumber').value;
+            const maxInput = document.getElementById('maxNumber').value;
+
+            const min = parseInt(minInput, 10);
+            const max = parseInt(maxInput, 10);
+
+            if (isNaN(min) || isNaN(max)) {
+                alert('Please enter valid numbers for both minimum and maximum.');
+                return;
+            }
+            if (min > max) {
+                alert('Minimum number cannot be greater than maximum number.');
+                return;
+            }
+
+            const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = randomNum;
+        }
+
+        function resetFields() {
+            document.getElementById('minNumber').value = '';
+            document.getElementById('maxNumber').value = '';
+            document.getElementById('result').textContent = '';
+        }
+    </script>
+
+</body>
+
+</html>
