@@ -61,7 +61,7 @@
             "description": "Create custom QR codes with logo and multiple data types.",
             "category": "Image",
             "url": "/tools/qr-code-generator.html",
-            "icon": "fas fa-qr"
+            "icon": "fas fa-qrcode"
         }
     ]
 }
