@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Image to Text (Multi-language OCR) – AH Tools Hub</title>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.3/dist/tesseract.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      background-color: #2c3e50;
+      padding: 16px;
+      color: #fff;
+      text-align: center;
+    }
+
+    footer {
+      background-color: #2c3e50;
+      padding: 12px;
+      color: white;
+      text-align: center;
+      margin-top: auto;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .card {
+      background: white;
+      max-width: 500px;
+      width: 100%;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    .card h2 {
+      margin-bottom: 20px;
+      font-size: 20px;
+      color: #333;
+    }
+
+    input[type="file"] {
+      margin: 10px 0;
+    }
+
+    textarea {
+      width: 100%;
+      height: 200px;
+      margin-top: 10px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      resize: vertical;
+      font-size: 14px;
+    }
+
+    #progress {
+      margin: 10px 0;
+      color: #555;
+    }
+
+    .loading {
+      font-style: italic;
+    }
+
+    .btn-group {
+      margin-top: 10px;
+    }
+
+    button {
+      margin: 5px;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    button:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Image To Text (Multi Language OCR) - AH Tools Hub</h1>
+  </header>
+
+  <main>
+    <div class="card">
+      <h2>🖼️ Image to Text (Multi-language OCR)</h2>
+      <input type="file" accept="image/*" id="imageInput" />
+      <div id="progress" class="loading">No image selected.</div>
+      <textarea id="output" placeholder="Extracted text will appear here..."></textarea>
+      <div class="btn-group">
+        <button onclick="copyText()">📋 Copy Text</button>
+        <button onclick="resetAll()">🔄 Reset</button>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2025 AH Tools Hub – All rights reserved.
+  </footer>
+
+  <script>
+    const imageInput = document.getElementById("imageInput");
+    const output = document.getElementById("output");
+    const progress = document.getElementById("progress");
+
+    imageInput.addEventListener("change", async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = async () => {
+        progress.textContent = "Processing... (please wait)";
+        try {
+          const { data } = await Tesseract.recognize(reader.result, "eng+ben+hin+spa+fra+deu+ara+rus+chi_sim+jpn", {
+            logger: (m) => {
+              if (m.status === "recognizing text") {
+                progress.textContent = `Progress: ${Math.round(m.progress * 100)}%`;
+              }
+            },
+          });
+
+          output.value = data.text.trim() || "No text detected.";
+          progress.textContent = "Done ✅";
+        } catch (err) {
+          console.error(err);
+          progress.textContent = "Error occurred while processing the image.";
+          output.value = "";
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+
+    function copyText() {
+      navigator.clipboard.writeText(output.value).then(() => {
+        alert("Text copied to clipboard!");
+      }).catch(err => {
+        alert("Failed to copy text: " + err);
+      });
+    }
+
+    function resetAll() {
+      imageInput.value = "";
+      output.value = "";
+      progress.textContent = "No image selected.";
+    }
+  </script>
+</body>
+</html>
