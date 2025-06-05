@@ -55,6 +55,13 @@
             "category": "Image",
             "url": "/tools/image-to-text.html",
             "icon": "fas fa-image"
+        },
+         {
+            "name":"QR Code Generator",
+            "description": "Create custom QR codes with logo and multiple data types.",
+            "category": "Image",
+            "url": "/tools/qr-code-generator.html",
+            "icon": "fas fa-qr"
         }
     ]
 }
