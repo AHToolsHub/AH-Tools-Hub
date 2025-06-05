@@ -62,6 +62,13 @@
             "category": "Image",
             "url": "/tools/qr-code-generator.html",
             "icon": "fas fa-qrcode"
+        },
+        {
+            "name": "Unit Converter",
+            "description": "Convert length, weight, temperature, speed, and more 📏⚖️",
+            "category": "Utility",
+            "url": "/tools/unit-converter.html",
+            "icon": "fas fa-drafting-compass",
         }
     ]
 }
