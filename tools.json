@@ -3,14 +3,14 @@
         {
             "name": "Word Counter",
             "description": "Count words and characters instantly with copy, download, and reset features.",
-            "category": "Text & Writing",
+            "category": "",
             "url": "/tools/word-counter.html",
             "icon": "fas fa-paragraph"
         },
         {
             "name": "Duplicate Lines Remover",
             "description": "Remove all duplicate lines from your text with a single click.",
-            "category": "Text & Writing",
+            "category": "",
             "url": "/tools/duplicate-lines-remover.html",
             "icon": "fas fa-broom"
         },
