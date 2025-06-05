@@ -51,7 +51,7 @@
         },
         {
             "name":"Image to Text (Multi-language OCR)",
-            "description": ""🖼️ Extract text from images in multiple languages using OCR technology.",
+            "description": "🖼️ Extract text from images in multiple languages using OCR technology.",
             "category": "Image",
             "url": "/tools/image-to-text.html",
             "icon": "fas fa-image"
