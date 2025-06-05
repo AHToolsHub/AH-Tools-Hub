@@ -3,36 +3,45 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Image to Text (Multi-language OCR) – AH Tools Hub</title>
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.3/dist/tesseract.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+  <title>Image to Text | AH Tools Hub</title>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.0.2/dist/tesseract.min.js"></script>
   <style>
+    :root {
+      --primary: #2c3e50;
+      --bg: #f4f6f8;
+      --text: #333;
+      --card-bg: #fff;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      --btn-bg: #2c3e50;
+      --btn-color: #fff;
+      --btn-hover-bg: #1a2735;
+    }
+
     * {
+      margin: 0;
+      padding: 0;
       box-sizing: border-box;
     }
 
+    html, body {
+      height: 100%;
+      font-family: "Segoe UI", sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+    }
+
     body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f2f2f2;
       display: flex;
       flex-direction: column;
       min-height: 100vh;
     }
 
     header {
-      background-color: #2c3e50;
-      padding: 16px;
+      background-color: var(--primary);
       color: #fff;
+      padding: 1.5rem 2rem;
       text-align: center;
-    }
-
-    footer {
-      background-color: #2c3e50;
-      padding: 12px;
-      color: white;
-      text-align: center;
-      margin-top: auto;
     }
 
     main {
@@ -40,149 +49,149 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 20px;
+      padding: 2rem 1rem;
     }
 
-    .card {
-      background: white;
-      max-width: 500px;
+    .tool-card {
+      background-color: var(--card-bg);
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+      max-width: 700px;
       width: 100%;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
-    .card h2 {
-      margin-bottom: 20px;
-      font-size: 20px;
-      color: #333;
+    .tool-card h1 {
+      text-align: center;
+      color: var(--primary);
+      margin-bottom: 1rem;
     }
 
     input[type="file"] {
-      margin: 10px 0;
+      margin-bottom: 1rem;
     }
 
     textarea {
       width: 100%;
       height: 200px;
-      margin-top: 10px;
-      padding: 10px;
+      padding: 1rem;
+      border-radius: 8px;
       border: 1px solid #ccc;
-      border-radius: 6px;
+      font-size: 1rem;
       resize: vertical;
-      font-size: 14px;
+      font-family: inherit;
+      margin-bottom: 1rem;
     }
 
-    #progress {
-      margin: 10px 0;
-      color: #555;
-    }
-
-    .loading {
-      font-style: italic;
-    }
-
-    .btn-group {
-      margin-top: 10px;
+    .buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
     }
 
     button {
-      margin: 5px;
-      padding: 8px 16px;
+      background-color: var(--btn-bg);
       border: none;
+      color: var(--btn-color);
+      padding: 0.6rem 1.4rem;
       border-radius: 6px;
-      background-color: #007bff;
-      color: white;
       cursor: pointer;
-      font-size: 14px;
+      font-size: 1rem;
+      transition: background-color 0.3s ease;
+      user-select: none;
     }
 
     button:hover {
-      background-color: #0056b3;
+      background-color: var(--btn-hover-bg);
     }
 
-    button:disabled {
-      background-color: #cccccc;
-      cursor: not-allowed;
+    footer {
+      background-color: #ecf0f1;
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.9rem;
+      color: #555;
+      margin-top: auto;
+    }
+
+    @media (max-width: 480px) {
+      .tool-card {
+        padding: 1rem;
+      }
+
+      header {
+        padding: 1rem;
+      }
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>Image To Text (Multi Language OCR) - AH Tools Hub</h1>
+    <h1>Image to Text - AH Tools Hub</h1>
+    <p>Extract text from images with multi-language OCR and clipboard support.</p>
   </header>
 
   <main>
-    <div class="card">
-      <h2>🖼️ Image to Text (Multi-language OCR)</h2>
-      <input type="file" accept="image/*" id="imageInput" />
-      <div id="progress" class="loading">No image selected.</div>
-      <textarea id="output" placeholder="Extracted text will appear here..."></textarea>
-      <div class="btn-group">
-        <button onclick="copyText()">📋 Copy Text</button>
-        <button onclick="resetAll()">🔄 Reset</button>
+    <div class="tool-card">
+      <h1>Upload or Paste Image</h1>
+      <input type="file" id="imageInput" accept="image/*" />
+      <textarea id="outputText" placeholder="Extracted text will appear here..."></textarea>
+      <div class="buttons">
+        <button onclick="copyText()">📋 Copy</button>
+        <button onclick="reset()">🔄 Reset</button>
       </div>
     </div>
   </main>
-	<script type="text/javascript">
-	atOptions = {
-		'key' : '9155a01355d6c9a5a60b33e125d8122d',
-		'format' : 'iframe',
-		'height' : 300,
-		'width' : 160,
-		'params' : {}
-	};
-</script>
-<script type="text/javascript" src="//www.highperformanceformat.com/9155a01355d6c9a5a60b33e125d8122d/invoke.js"></script>
+
   <footer>
-    &copy; 2025 AH Tools Hub – All rights reserved.
+    &copy; 2025 AH Tools Hub. All rights reserved.
   </footer>
 
   <script>
-    const imageInput = document.getElementById("imageInput");
-    const output = document.getElementById("output");
-    const progress = document.getElementById("progress");
+    const imageInput = document.getElementById('imageInput');
+    const outputText = document.getElementById('outputText');
 
-    imageInput.addEventListener("change", async (e) => {
-      const file = e.target.files[0];
+    imageInput.addEventListener('change', async () => {
+      const file = imageInput.files[0];
       if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = async () => {
-        progress.textContent = "Processing... (please wait)";
-        try {
-          const { data } = await Tesseract.recognize(reader.result, "eng+ben+spa+ara", {
-            logger: (m) => {
-              if (m.status === "recognizing text") {
-                progress.textContent = `Progress: ${Math.round(m.progress * 100)}%`;
-              }
-            },
-          });
-
-          output.value = data.text.trim() || "No text detected.";
-          progress.textContent = "Done ✅";
-        } catch (err) {
-          console.error(err);
-          progress.textContent = "Error occurred while processing the image.";
-          output.value = "";
-        }
-      };
-      reader.readAsDataURL(file);
+      recognizeText(file);
     });
 
-    function copyText() {
-      navigator.clipboard.writeText(output.value).then(() => {
-        alert("Text copied to clipboard!");
-      }).catch(err => {
-        alert("Failed to copy text: " + err);
-      });
+    document.addEventListener('paste', (event) => {
+      const items = (event.clipboardData || event.originalEvent.clipboardData).items;
+      for (let item of items) {
+        if (item.type.indexOf("image") === 0) {
+          const blob = item.getAsFile();
+          recognizeText(blob);
+        }
+      }
+    });
+
+    async function recognizeText(image) {
+      outputText.value = "Processing...";
+      try {
+        const { data: { text } } = await Tesseract.recognize(image, 'eng+ben+spa+ara', {
+          logger: m => console.log(m)
+        });
+        outputText.value = text.trim();
+      } catch (err) {
+        outputText.value = "Error: " + err.message;
+      }
     }
 
-    function resetAll() {
-      imageInput.value = "";
-      output.value = "";
-      progress.textContent = "No image selected.";
+    function copyText() {
+      outputText.select();
+      document.execCommand('copy');
+      alert("Text copied to clipboard!");
+    }
+
+    function reset() {
+      outputText.value = "";
+      imageInput.value = null;
     }
   </script>
 </body>
