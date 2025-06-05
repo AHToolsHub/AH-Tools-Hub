@@ -68,7 +68,7 @@
             "description": "Convert length, weight, temperature, speed, and more 📏⚖️",
             "category": "Utility",
             "url": "/tools/unit-converter.html",
-            "icon": "fas fa-drafting-compass",
+            "icon": "fas fa-drafting-compass"
         }
     ]
 }
