@@ -152,7 +152,7 @@
       reader.onload = async () => {
         progress.textContent = "Processing... (please wait)";
         try {
-          const { data } = await Tesseract.recognize(reader.result, "eng+ben+hin+spa+fra+deu+ara+rus+chi_sim+jpn", {
+          const { data } = await Tesseract.recognize(reader.result, "eng+ben+spa+ara", {
             logger: (m) => {
               if (m.status === "recognizing text") {
                 progress.textContent = `Progress: ${Math.round(m.progress * 100)}%`;
