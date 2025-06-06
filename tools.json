@@ -69,6 +69,13 @@
             "category": "Utilities",
             "url": "/tools/unit-converter.html",
             "icon": "fas fa-drafting-compass"
+        },
+		{
+            "name": "JSON Formatter",
+            "description": "Format your JSON data instantly with easy copy functionality.",
+            "category": "Developer",
+            "url": "/tools/json-formater.html",
+            "icon": "fas fa-javascript"
         }
     ]
 }
