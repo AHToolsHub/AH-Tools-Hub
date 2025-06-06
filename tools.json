@@ -75,7 +75,7 @@
             "description": "Format your JSON data instantly with easy copy functionality.",
             "category": "Developer",
             "url": "/tools/json-formater.html",
-            "icon": "fas fa-javascript"
+            "icon": "fas fa-code"
         }
     ]
 }
