@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JSON Validator | AH Tools Hub</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f0f2f5;
+      margin: 0;
+      padding: 0;
+    }
+
+    header, footer {
+      background-color: #1e293b;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+    }
+
+    main {
+      padding: 2rem;
+      max-width: 800px;
+      margin: auto;
+    }
+
+    h1 {
+      text-align: center;
+      color: #1e293b;
+    }
+
+    textarea {
+      width: 100%;
+      height: 250px;
+      padding: 1rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      resize: vertical;
+      box-sizing: border-box;
+    }
+
+    .btn-group {
+      display: flex;
+      justify-content: center;
+      margin-top: 1rem;
+      gap: 1rem;
+    }
+
+    button {
+      padding: 0.7rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      background-color: #0f172a;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #1e40af;
+    }
+
+    /* Modal Styles */
+    .modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+    .modal-content {
+      background-color: #fff;
+      margin: 15% auto;
+      padding: 20px;
+      border-radius: 10px;
+      width: 80%;
+      max-width: 400px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      text-align: center;
+    }
+
+    .modal-title {
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+      font-weight: bold;
+      color: #0f172a;
+    }
+
+    .modal-body {
+      font-size: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .close-btn {
+      padding: 0.5rem 1.2rem;
+      background-color: #1e40af;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .close-btn:hover {
+      background-color: #0f172a;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h2>JSON Validator | AH Tools Hub</h2>
+  </header>
+
+  <main>
+    <h1>JSON Validator - AH Tools Hub</h1>
+    <p style="text-align:center; color:#555;">Check if your JSON is valid using a simple popup.</p>
+
+    <textarea id="jsonInput" placeholder='Paste your JSON here...'></textarea>
+
+    <div class="btn-group">
+      <button onclick="validateJSON()">✅ Validate JSON</button>
+      <button onclick="resetForm()">🔄 Reset</button>
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2025 AH Tools Hub. All rights reserved.</p>
+  </footer>
+
+  <!-- Modal -->
+  <div id="resultModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-title">Result</div>
+      <div id="modalMessage" class="modal-body"></div>
+      <button class="close-btn" onclick="closeModal()">OK</button>
+    </div>
+  </div>
+
+  <script>
+    function validateJSON() {
+      const input = document.getElementById('jsonInput').value.trim();
+      const modal = document.getElementById('resultModal');
+      const message = document.getElementById('modalMessage');
+
+      if (!input) {
+        message.textContent = '❗ Please enter some JSON to validate.';
+        modal.style.display = 'block';
+        return;
+      }
+
+      try {
+        JSON.parse(input);
+        message.textContent = '✅ Valid JSON';
+      } catch (error) {
+        message.textContent = '❌ Invalid JSON: ' + error.message;
+      }
+
+      modal.style.display = 'block';
+    }
+
+    function resetForm() {
+      document.getElementById('jsonInput').value = '';
+    }
+
+    function closeModal() {
+      document.getElementById('resultModal').style.display = 'none';
+    }
+
+    // Close modal on outside click
+    window.onclick = function (event) {
+      const modal = document.getElementById('resultModal');
+      if (event.target === modal) {
+        modal.style.display = 'none';
+      }
+    };
+  </script>
+</body>
+  </html>
