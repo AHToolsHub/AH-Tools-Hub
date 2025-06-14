@@ -83,6 +83,13 @@
             "category": "Developer",
             "url": "/tools/json-validator.html",
             "icon": "fas fa-clipboard-check"
+	},
+	{
+            "name": "UUID Generator",
+            "description": "Generate unique UUID v4 with one click",
+            "category": "Developer",
+            "url": "/tools/uuid-generator.html",
+            "icon": "fas fa-id-badge"
 	}
     ]
 }
