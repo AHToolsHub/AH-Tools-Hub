@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+  <title>Image to Text Converter – Free OCR Tool | AH Tools Hub</title>
+<meta name="description" content="Convert images to text instantly using our free OCR tool. Supports multiple languages, clipboard pasting & fast results. No sign-up needed.">
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.0.2/dist/tesseract.min.js"></script>
+  <style>
+    :root {
+      --primary: #2c3e50;
+      --bg: #f4f6f8;
+      --text: #333;
+      --card-bg: #fff;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      --btn-bg: #2c3e50;
+      --btn-color: #fff;
+      --btn-hover-bg: #1a2735;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: "Segoe UI", sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      background-color: var(--primary);
+      color: #fff;
+      padding: 1.5rem 2rem;
+      text-align: center;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem 1rem;
+    }
+
+    .tool-card {
+      background-color: var(--card-bg);
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+      max-width: 700px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .tool-card h1 {
+      text-align: center;
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+
+    input[type="file"] {
+      margin-bottom: 1rem;
+    }
+
+    textarea {
+      width: 100%;
+      height: 200px;
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+      resize: vertical;
+      font-family: inherit;
+      margin-bottom: 1rem;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    button {
+      background-color: var(--btn-bg);
+      border: none;
+      color: var(--btn-color);
+      padding: 0.6rem 1.4rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.3s ease;
+      user-select: none;
+    }
+
+    button:hover {
+      background-color: var(--btn-hover-bg);
+    }
+
+    footer {
+      background-color: #ecf0f1;
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.9rem;
+      color: #555;
+      margin-top: auto;
+    }
+
+    @media (max-width: 480px) {
+      .tool-card {
+        padding: 1rem;
+      }
+
+      header {
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Image to Text - AH Tools Hub</h1>
+    <p>Extract text from images with multi-language OCR and clipboard support.</p>
+  </header>
+
+  <main>
+    <div class="tool-card">
+      <h1>Upload or Paste Image</h1>
+      <input type="file" id="imageInput" accept="image/*" />
+      <textarea id="outputText" placeholder="Extracted text will appear here..."></textarea>
+      <div class="buttons">
+        <button onclick="copyText()">📋 Copy</button>
+        <button onclick="reset()">🔄 Reset</button>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2025 AH Tools Hub. All rights reserved.
+  </footer>
+
+  <script>
+    const imageInput = document.getElementById('imageInput');
+    const outputText = document.getElementById('outputText');
+
+    imageInput.addEventListener('change', async () => {
+      const file = imageInput.files[0];
+      if (!file) return;
+      recognizeText(file);
+    });
+
+    document.addEventListener('paste', (event) => {
+      const items = (event.clipboardData || event.originalEvent.clipboardData).items;
+      for (let item of items) {
+        if (item.type.indexOf("image") === 0) {
+          const blob = item.getAsFile();
+          recognizeText(blob);
+        }
+      }
+    });
+
+    async function recognizeText(image) {
+      outputText.value = "Processing...";
+      try {
+        const { data: { text } } = await Tesseract.recognize(image, 'eng+ben+spa+ara', {
+          logger: m => console.log(m)
+        });
+        outputText.value = text.trim();
+      } catch (err) {
+        outputText.value = "Error: " + err.message;
+      }
+    }
+
+    function copyText() {
+      outputText.select();
+      document.execCommand('copy');
+      alert("Text copied to clipboard!");
+    }
+
+    function reset() {
+      outputText.value = "";
+      imageInput.value = null;
+    }
+  </script>
+  <script async="async" data-cfasync="false" src="//pl26838565.profitableratecpm.com/166aa5f005c35bee7e1c111e9901a520/invoke.js"></script>
+<div id="container-166aa5f005c35bee7e1c111e9901a520"></div>
+</body>
+</html>

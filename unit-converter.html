@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Unit Converter | AH Tools Hub</title>
+  <link rel="icon" href="/images/favicon.ico" type="image/x-icon" />
+  <style>
+    :root {
+      --primary: #2c3e50;
+      --bg: #f4f6f8;
+      --text: #333;
+      --card-bg: #fff;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      --btn-bg: #2c3e50;
+      --btn-color: #fff;
+      --btn-hover-bg: #1a2735;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      background-color: var(--primary);
+      color: #fff;
+      padding: 1.5rem 2rem;
+      text-align: center;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem 1rem;
+    }
+
+    .tool-card {
+      background-color: var(--card-bg);
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+      max-width: 600px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    h1 {
+      color: #fff;
+      text-align: center;
+    }
+
+    select, input {
+      padding: 0.7rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+      width: 100%;
+    }
+
+    .row {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .row > div {
+      flex: 1;
+      min-width: 150px;
+    }
+
+    .result {
+      text-align: center;
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-top: 1rem;
+    }
+
+    footer {
+      background-color: #ecf0f1;
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    @media (max-width: 480px) {
+      .tool-card {
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Unit Converter - AH Tools Hub</h1>
+    <p>Convert between units of measurement easily.</p>
+  </header>
+
+  <main>
+    <div class="tool-card">
+      <h1>Unit Converter</h1>
+
+      <select id="category" onchange="loadUnits()">
+        <option value="length">Length</option>
+        <option value="weight">Weight</option>
+        <option value="temperature">Temperature</option>
+        <option value="time">Time</option>
+        <option value="speed">Speed</option>
+        <option value="area">Area</option>
+        <option value="volume">Volume</option>
+        <option value="storage">Digital Storage</option>
+        <option value="pressure">Pressure</option>
+      </select>
+
+      <div class="row">
+        <div>
+          <input type="number" id="inputValue" placeholder="Enter value" oninput="convert()" />
+        </div>
+        <div>
+          <select id="fromUnit" onchange="convert()"></select>
+        </div>
+        <div>
+          <select id="toUnit" onchange="convert()"></select>
+        </div>
+      </div>
+
+      <div class="result" id="result">Result: 0</div>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2025 AH Tools Hub. All rights reserved.
+  </footer>
+
+  <script>
+    const units = {
+      length: {
+        m: 1,
+        km: 1000,
+        cm: 0.01,
+        mm: 0.001,
+        mi: 1609.34,
+        yd: 0.9144,
+        ft: 0.3048,
+        in: 0.0254
+      },
+      weight: {
+        kg: 1,
+        g: 0.001,
+        mg: 0.000001,
+        lb: 0.453592,
+        oz: 0.0283495
+      },
+      temperature: {
+        C: "C",
+        F: "F",
+        K: "K"
+      },
+      time: {
+        s: 1,
+        min: 60,
+        h: 3600,
+        d: 86400
+      },
+      speed: {
+        "m/s": 1,
+        "km/h": 0.277778,
+        "mph": 0.44704,
+        "knot": 0.514444
+      },
+      area: {
+        "m²": 1,
+        "km²": 1e6,
+        "cm²": 0.0001,
+        "mm²": 0.000001,
+        "acre": 4046.86,
+        "hectare": 10000
+      },
+      volume: {
+        "m³": 1,
+        "l": 0.001,
+        "ml": 0.000001,
+        "cm³": 0.000001,
+        "ft³": 0.0283168,
+        "in³": 0.0000163871
+      },
+      storage: {
+        B: 1,
+        KB: 1024,
+        MB: 1048576,
+        GB: 1073741824,
+        TB: 1099511627776
+      },
+      pressure: {
+        Pa: 1,
+        kPa: 1000,
+        atm: 101325,
+        bar: 100000,
+        psi: 6894.76
+      }
+    };
+
+    function loadUnits() {
+      const category = document.getElementById("category").value;
+      const from = document.getElementById("fromUnit");
+      const to = document.getElementById("toUnit");
+
+      from.innerHTML = '';
+      to.innerHTML = '';
+
+      for (let unit in units[category]) {
+        from.innerHTML += `<option value="${unit}">${unit}</option>`;
+        to.innerHTML += `<option value="${unit}">${unit}</option>`;
+      }
+
+      convert();
+    }
+
+    function convert() {
+      const category = document.getElementById("category").value;
+      const input = parseFloat(document.getElementById("inputValue").value);
+      const fromUnit = document.getElementById("fromUnit").value;
+      const toUnit = document.getElementById("toUnit").value;
+      const result = document.getElementById("result");
+
+      if (isNaN(input)) {
+        result.textContent = "Result: 0";
+        return;
+      }
+
+      if (category === "temperature") {
+        result.textContent = "Result: " + convertTemperature(input, fromUnit, toUnit);
+      } else {
+        const base = input * units[category][fromUnit];
+        const converted = base / units[category][toUnit];
+        result.textContent = "Result: " + converted.toFixed(4);
+      }
+    }
+
+    function convertTemperature(value, from, to) {
+      let celsius;
+
+      if (from === "C") celsius = value;
+      else if (from === "F") celsius = (value - 32) * 5/9;
+      else if (from === "K") celsius = value - 273.15;
+
+      let result;
+      if (to === "C") result = celsius;
+      else if (to === "F") result = (celsius * 9/5) + 32;
+      else if (to === "K") result = celsius + 273.15;
+
+      return result.toFixed(2);
+    }
+
+    loadUnits(); // Initialize default units on page load
+  </script>
+  <script async="async" data-cfasync="false" src="//pl26838565.profitableratecpm.com/166aa5f005c35bee7e1c111e9901a520/invoke.js"></script>
+<div id="container-166aa5f005c35bee7e1c111e9901a520"></div>
+</body>
+  </html>

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Image Color Picker - AH Tools Hub</title>
+    <style>
+        /* Reset & base */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            color: #2c3e50;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header,
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        main {
+            flex-grow: 1;
+            padding: 20px;
+            max-width: 700px;
+            margin: 0 auto;
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        p.description {
+            margin-top: 0;
+            color: #34495e;
+            font-size: 1rem;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        #uploadLabel {
+            background-color: #2c3e50;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: inline-block;
+            font-weight: 600;
+            user-select: none;
+        }
+
+        #imageInput {
+            display: none;
+        }
+
+        #imageContainer {
+            max-width: 100%;
+            border: 2px solid #2c3e50;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: crosshair;
+            margin-bottom: 25px;
+        }
+
+        #imageContainer img {
+            max-width: 100%;
+            display: block;
+        }
+
+        #colorInfo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 30px;
+            min-height: 100px;
+        }
+
+        .color-swatch {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            border: 2px solid #2c3e50;
+            box-shadow: 0 0 8px rgba(44, 62, 80, 0.4);
+        }
+
+        .color-codes {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .code-box {
+            background: white;
+            border: 1px solid #2c3e50;
+            border-radius: 5px;
+            padding: 10px 15px;
+            font-family: monospace;
+            font-size: 1.1rem;
+            cursor: pointer;
+            user-select: all;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 1px 3px rgba(44, 62, 80, 0.15);
+        }
+
+        .code-box:hover {
+            background-color: #2c3e50;
+            color: white;
+            border-color: white;
+        }
+
+        button#resetBtn {
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button#resetBtn:hover {
+            background-color: #34495e;
+        }
+
+        @media (max-width: 480px) {
+            .color-codes {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .code-box {
+                width: 80%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>AH Tools Hub - Image Color Picker</header>
+
+    <main>
+        <h1>Image Color Picker 🎨</h1>
+        <p class="description">Upload an image and click anywhere on it to get the color's HEX and RGB codes.</p>
+
+        <label id="uploadLabel" for="imageInput">Upload Image</label>
+        <input type="file" id="imageInput" accept="image/png, image/jpeg, image/webp" />
+
+        <div id="imageContainer" aria-label="Uploaded image area">
+            <!-- Image will be displayed here -->
+        </div>
+
+        <div id="colorInfo" aria-live="polite" aria-atomic="true" aria-relevant="text">
+            <div class="color-swatch" id="colorSwatch" title="Color preview"
+                style="background:#fff; border:2px solid #ccc;"></div>
+            <div class="color-codes" id="colorCodes">
+                <div class="code-box" id="hexCode" tabindex="0" title="Click to copy HEX code">HEX: #FFFFFF</div>
+                <div class="code-box" id="rgbCode" tabindex="0" title="Click to copy RGB code">RGB: rgb(255, 255, 255)
+                </div>
+            </div>
+        </div>
+
+        <button id="resetBtn" aria-label="Reset tool">Reset</button>
+    </main>
+    <script type="text/javascript">
+	atOptions = {
+		'key' : '9155a01355d6c9a5a60b33e125d8122d',
+		'format' : 'iframe',
+		'height' : 300,
+		'width' : 160,
+		'params' : {}
+	};
+</script>
+<script type="text/javascript" src="//www.highperformanceformat.com/9155a01355d6c9a5a60b33e125d8122d/invoke.js"></script>
+    <footer>© 2025 AH Tools Hub</footer>
+
+    <script>
+        const imageInput = document.getElementById('imageInput');
+        const imageContainer = document.getElementById('imageContainer');
+        const colorSwatch = document.getElementById('colorSwatch');
+        const hexCode = document.getElementById('hexCode');
+        const rgbCode = document.getElementById('rgbCode');
+        const resetBtn = document.getElementById('resetBtn');
+
+        let imgElement = null;
+        let canvas, ctx;
+
+        function resetTool() {
+            imageContainer.innerHTML = '';
+            colorSwatch.style.backgroundColor = '#fff';
+            colorSwatch.style.border = '2px solid #ccc';
+            hexCode.textContent = 'HEX: #FFFFFF';
+            rgbCode.textContent = 'RGB: rgb(255, 255, 255)';
+            imageInput.value = '';
+        }
+
+        function copyToClipboard(text, element) {
+            navigator.clipboard.writeText(text).then(() => {
+                const original = element.textContent;
+                element.textContent = 'Copied!';
+                setTimeout(() => {
+                    element.textContent = original;
+                }, 1200);
+            }).catch(() => {
+                alert('Copy failed, please copy manually.');
+            });
+        }
+
+        function rgbToHex(r, g, b) {
+            return "#" + [r, g, b].map(x => {
+                const hex = x.toString(16);
+                return hex.length === 1 ? '0' + hex : hex;
+            }).join('');
+        }
+
+        imageInput.addEventListener('change', () => {
+            const file = imageInput.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                imageContainer.innerHTML = '';
+                imgElement = document.createElement('img');
+                imgElement.src = e.target.result;
+                imgElement.alt = 'Uploaded image for color picking';
+                imgElement.style.maxWidth = '100%';
+                imgElement.style.display = 'block';
+                imageContainer.appendChild(imgElement);
+
+                // Create canvas for pixel reading
+                canvas = document.createElement('canvas');
+                ctx = canvas.getContext('2d');
+
+                imgElement.onload = () => {
+                    canvas.width = imgElement.naturalWidth;
+                    canvas.height = imgElement.naturalHeight;
+                    ctx.drawImage(imgElement, 0, 0);
+                };
+            };
+            reader.readAsDataURL(file);
+        });
+
+        imageContainer.addEventListener('click', e => {
+            if (!imgElement) return;
+
+            const rect = imgElement.getBoundingClientRect();
+
+            // Calculate click position relative to the actual image size
+            const scaleX = imgElement.naturalWidth / rect.width;
+            const scaleY = imgElement.naturalHeight / rect.height;
+            const x = Math.floor((e.clientX - rect.left) * scaleX);
+            const y = Math.floor((e.clientY - rect.top) * scaleY);
+
+            // Get pixel data from canvas
+            const pixel = ctx.getImageData(x, y, 1, 1).data;
+            const [r, g, b, a] = pixel;
+
+            if (a === 0) {
+                alert('Clicked on transparent area. Please click on a visible pixel.');
+                return;
+            }
+
+            const hex = rgbToHex(r, g, b).toUpperCase();
+            const rgb = `rgb(${r}, ${g}, ${b})`;
+
+            colorSwatch.style.backgroundColor = hex;
+            colorSwatch.style.border = `2px solid ${hex}`;
+            hexCode.textContent = `HEX: ${hex}`;
+            rgbCode.textContent = `RGB: ${rgb}`;
+        });
+
+        hexCode.addEventListener('click', () => {
+            const text = hexCode.textContent.replace('HEX: ', '');
+            copyToClipboard(text, hexCode);
+        });
+
+        rgbCode.addEventListener('click', () => {
+            const text = rgbCode.textContent.replace('RGB: ', '');
+            copyToClipboard(text, rgbCode);
+        });
+
+        resetBtn.addEventListener('click', resetTool);
+
+        // Initialize
+        resetTool();
+    </script>
+	<script async="async" data-cfasync="false" src="//pl26838565.profitableratecpm.com/166aa5f005c35bee7e1c111e9901a520/invoke.js"></script>
+<div id="container-166aa5f005c35bee7e1c111e9901a520"></div>
+</body>
+
+</html>

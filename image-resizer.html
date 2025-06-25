@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Image Resizer | AH Tools Hub</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --bg: #f4f6f8;
+            --text: #333;
+            --card-bg: #fff;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --btn-bg: #2c3e50;
+            --btn-color: #fff;
+            --btn-hover-bg: #1a2735;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+            font-family: "Segoe UI", sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: var(--primary);
+            color: #fff;
+            padding: 1.5rem 2rem;
+            text-align: center;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem 1rem;
+        }
+
+        .tool-card {
+            background-color: var(--card-bg);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            max-width: 700px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .tool-card h1 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .upload-area {
+            border: 2px dashed var(--primary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 1rem;
+            background: #fff;
+        }
+
+        .upload-area:hover {
+            background: #ecf0f1;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        input[type="number"] {
+            padding: 0.5rem;
+            margin: 0.5rem;
+            font-size: 1rem;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            width: 45%;
+        }
+
+        button {
+            background-color: var(--btn-bg);
+            border: none;
+            color: var(--btn-color);
+            padding: 0.6rem 1.4rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+            margin: 0.5rem auto;
+            display: block;
+        }
+
+        button:hover {
+            background-color: var(--btn-hover-bg);
+        }
+
+        #preview {
+            max-width: 100%;
+            margin: 1rem auto;
+            border-radius: 6px;
+            display: none;
+        }
+
+        footer {
+            background-color: #ecf0f1;
+            text-align: center;
+            padding: 1rem;
+            font-size: 0.9rem;
+            color: #555;
+            margin-top: auto;
+        }
+
+        @media (max-width: 480px) {
+            .tool-card {
+                padding: 1rem;
+            }
+
+            input[type="number"] {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Image Resizer - AH Tools Hub</h1>
+        <p>Resize PNG, JPG, or WEBP images quickly 📐</p>
+    </header>
+
+    <main>
+        <div class="tool-card">
+            <h1>Select an Image</h1>
+            <label class="upload-area" for="imageInput">📁 Click or drag an image here</label>
+            <input type="file" id="imageInput" accept="image/png, image/jpeg, image/webp" />
+
+            <img id="preview" />
+
+            <div>
+                <input type="number" id="widthInput" placeholder="Width (px)">
+                <input type="number" id="heightInput" placeholder="Height (px)">
+            </div>
+
+            <button onclick="resizeImage()">⬇️ Download Resized Image</button>
+            <button onclick="resetTool()">🔄 Reset</button>
+        </div>
+    </main>
+
+    <footer>
+        &copy; 2025 AH Tools Hub. All rights reserved.
+    </footer>
+
+    <script>
+        let originalImage = null;
+
+        const imageInput = document.getElementById('imageInput');
+        const preview = document.getElementById('preview');
+
+        imageInput.addEventListener('change', function () {
+            const file = imageInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    originalImage = new Image();
+                    originalImage.onload = () => {
+                        preview.src = originalImage.src;
+                        preview.style.display = 'block';
+                    };
+                    originalImage.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function resizeImage() {
+            const width = parseInt(document.getElementById('widthInput').value);
+            const height = parseInt(document.getElementById('heightInput').value);
+
+            if (!originalImage) {
+                alert("Please upload an image first!");
+                return;
+            }
+
+            if (!width || !height) {
+                alert("Please enter valid width and height!");
+                return;
+            }
+
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(originalImage, 0, 0, width, height);
+
+            const dataURL = canvas.toDataURL('image/png');
+            const a = document.createElement('a');
+            a.href = dataURL;
+            a.download = 'resized-image.png';
+            a.click();
+        }
+
+        function resetTool() {
+            imageInput.value = '';
+            preview.src = '';
+            preview.style.display = 'none';
+            originalImage = null;
+            document.getElementById('widthInput').value = '';
+            document.getElementById('heightInput').value = '';
+        }
+    </script>
+    <script async="async" data-cfasync="false" src="//pl26838565.profitableratecpm.com/166aa5f005c35bee7e1c111e9901a520/invoke.js"></script>
+<div id="container-166aa5f005c35bee7e1c111e9901a520"></div>
+</body>
+
+</html>
