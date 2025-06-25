@@ -90,6 +90,13 @@
             "category": "Developer",
             "url": "/tools/uuid-generator.html",
             "icon": "fas fa-id-badge"
+	},
+	{
+            "name": "Background Remover",
+            "description": "Remove Image Background in One Click - Fast & Free!",
+            "category": "Image",
+            "url": "/tools/bg-remover.html",
+            "icon": "fas fa-eraser"
 	}
     ]
 }
