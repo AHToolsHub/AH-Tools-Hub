@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Background Remover | AH Tools Hub</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* Base styles for the body, ensuring full height and centering content */
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%); /* Soft gradient background */
+            min-height: 100vh; /* Minimum height of the viewport */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem; /* Base padding around the main container for small screens */
+        }
+
+        /* Styles for the main content container */
+        .container {
+            max-width: 900px; /* Maximum width for the container */
+            width: 100%; /* Ensure it takes full available width on smaller screens */
+            background-color: #ffffff;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Soft shadow */
+            border-radius: 1.5rem; /* Rounded corners for a modern look */
+            padding: 2rem; /* Default padding for inside the container */
+        }
+
+        /* Responsive padding adjustments for the container */
+        @media (min-width: 768px) { /* For medium screens and up */
+            .container {
+                padding: 3rem; /* Increased padding */
+            }
+        }
+        @media (min-width: 1024px) { /* For large screens and up */
+            .container {
+                padding: 4rem; /* Even larger padding */
+            }
+        }
+
+        /* Styling for the file input label (drag and drop area) */
+        .file-input-label {
+            cursor: pointer;
+            border: 2px dashed #a0aec0; /* Lighter gray dashed border */
+            border-radius: 1rem; /* Rounded corners */
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease-in-out; /* Smooth transition for hover effects */
+            background-color: #f7fafc; /* Very light gray background */
+        }
+        .file-input-label:hover {
+            border-color: #6366f1; /* Indigo border on hover */
+            background-color: #eef2ff; /* Lighter indigo background on hover */
+        }
+
+        /* Styling for the loading spinner */
+        .loading-spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #6366f1; /* Indigo colored top border for the spinner effect */
+            border-radius: 50%; /* Makes it a circle */
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite; /* Spin animation */
+        }
+        /* Keyframe animation for the spinner */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Styling for the primary button (Remove Background) */
+        .button-primary {
+            background-image: linear-gradient(to right, #6366f1, #8b5cf6); /* Indigo to violet gradient */
+            transition: all 0.3s ease; /* Smooth transition for hover effects */
+        }
+        .button-primary:hover {
+            background-image: linear-gradient(to right, #4f46e5, #7c3aed); /* Darker gradient on hover */
+            transform: translateY(-2px); /* Slight lift effect */
+            box-shadow: 0 4px 10px rgba(99, 102, 241, 0.4); /* Shadow on hover */
+        }
+
+        /* Styling for the secondary button (Download Image) */
+        .button-secondary {
+            background-color: #10b981; /* Emerald green */
+            transition: all 0.3s ease; /* Smooth transition for hover effects */
+        }
+        .button-secondary:hover {
+            background-color: #059669; /* Darker emerald on hover */
+            transform: translateY(-2px); /* Slight lift effect */
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.4); /* Shadow on hover */
+        }
+
+        /* Styling for the result display container */
+        .result-container {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0; /* Light border */
+            position: relative;
+            overflow: hidden; /* Ensures the checkerboard pattern stays within bounds */
+        }
+
+        /* Checkerboard background pattern for transparency visualization */
+        .checkerboard-bg {
+            background-image:
+                linear-gradient(45deg, #e2e8f0 25%, transparent 25%),
+                linear-gradient(-45deg, #e2e8f0 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #e2e8f0 75%),
+                linear-gradient(-45deg, transparent 75%, #e2e8f0 75%);
+            background-size: 20px 20px; /* Size of each square in the pattern */
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px; /* Positioning for the pattern */
+            opacity: 0.6; /* Semi-transparent */
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 0; /* Ensures it's behind the image */
+        }
+
+        /* Styling for the output image */
+        #outputImage {
+            position: relative;
+            z-index: 1; /* Ensures the image is above the checkerboard */
+            background-color: transparent; /* Ensures the image background is transparent */
+            /* Responsive max-height for the image using JavaScript to dynamically calculate */
+            /* The max-height is set in JavaScript to scale based on viewport height,
+               up to a maximum of 450px for larger screens. */
+        }
+    </style>
+</head>
+
+<body class="flex items-center justify-center min-h-screen p-4">
+    <div class="container w-full space-y-8">
+        <!-- Main Title with Icon -->
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-center text-gray-800 mb-8 flex items-center justify-center gap-3">
+            <svg class="w-8 h-8 sm:w-10 sm:h-10 text-indigo-600" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm-1 16H8a1 1 0 01-1-1v-2h2v1h1v2zm2-10V7h2v1h1v2h-2v-1h-1zM9 9h2v2H9V9zm4 0h2v2h-2V9zm-4 4h2v2H9v-2zm4 0h2v2h-2v-2z"/>
+            </svg>
+            Image Background Remover
+        </h1>
+
+        <!-- File Upload Section with Drag & Drop -->
+        <div class="flex flex-col items-center justify-center rounded-2xl p-6 md:p-10 bg-gradient-to-br from-indigo-50 to-purple-50 hover:from-indigo-100 hover:to-purple-100 transition-all duration-300 shadow-inner">
+            <label for="imageUpload" class="file-input-label flex flex-col items-center justify-center w-full min-h-[180px] text-gray-700">
+                <svg class="w-14 h-14 sm:w-16 sm:h-16 mb-4 text-indigo-500" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M11.47 2.47a.75.75 0 011.06 0l4.5 4.5a.75.75 0 01-1.06 1.06l-3.22-3.22V16.5a.75.75 0 01-1.5 0V4.81L7.03 8.03a.75.75 0 01-1.06-1.06l4.5-4.5zM3 15.75A.75.75 0 013.75 15h16.5a.75.75 0 010 1.5H3.75a.75.75 0 01-.75-.75z" clip-rule="evenodd" />
+                </svg>
+                <span class="text-lg sm:text-xl font-semibold mb-3">Drag & Drop Image or Click to Upload</span>
+                <span class="text-sm sm:text-md text-gray-600">(JPG, PNG, WebP up to 10MB)</span>
+            </label>
+            <input type="file" id="imageUpload" accept="image/*" class="hidden">
+            <p id="fileName" class="text-sm sm:text-base font-medium text-gray-800 mt-4"></p>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row justify-center gap-4 mt-8">
+            <button id="removeBgBtn" class="button-primary text-white font-bold py-3 px-8 rounded-full shadow-lg flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto">
+                <span id="buttonText">Remove Background</span>
+                <div id="loadingSpinner" class="loading-spinner ml-3 hidden"></div>
+            </button>
+            <button id="downloadBtn" class="button-secondary text-white font-bold py-3 px-8 rounded-full shadow-lg disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto">
+                Download Image
+            </button>
+        </div>
+
+        <!-- Result Display Section -->
+        <div id="resultContainer" class="mt-10 result-container rounded-xl p-4 sm:p-6 flex flex-col items-center justify-center min-h-[250px] sm:min-h-[300px] relative hidden">
+            <div class="checkerboard-bg"></div> <!-- Checkerboard background for transparency -->
+            <p id="message" class="text-md sm:text-lg font-medium text-center z-10"></p>
+            <div class="relative w-full h-auto max-w-full flex justify-center">
+                <img id="outputImage" src="#" alt="Processed Image" class="rounded-lg shadow-xl max-w-full h-auto object-contain transition-transform duration-300">
+            </div>
+        </div>
+
+        <!-- Error Message Container -->
+        <div id="errorContainer" class="mt-6 p-4 bg-red-100 border border-red-400 text-red-800 rounded-lg hidden">
+            <p id="errorMessage" class="font-medium text-sm sm:text-base"></p>
+        </div>
+    </div>
+
+    <script>
+        // Get references to DOM elements
+        const imageUpload = document.getElementById('imageUpload');
+        const fileNameDisplay = document.getElementById('fileName');
+        const removeBgBtn = document.getElementById('removeBgBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const outputImage = document.getElementById('outputImage');
+        const resultContainer = document.getElementById('resultContainer');
+        const messageDisplay = document.getElementById('message');
+        const errorContainer = document.getElementById('errorContainer');
+        const errorMessageDisplay = document.getElementById('errorMessage');
+        const buttonText = document.getElementById('buttonText');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+
+        let uploadedFile = null; // To store the uploaded file object
+
+        // IMPORTANT: Add your remove.bg API keys here as an array of strings.
+        // You can get them from https://www.remove.bg/api#keys
+        // If left empty, Canvas will try to provide a default (but it's best to add your own).
+        const apiKeys = [
+            "k8aqH8cL32bSZDdXNPmeFqS5", // Your 1st API key here
+            "xKhdFK8XRXUBgJn7tEDEyX6A", // Your 2nd API key here (if you have one)
+            "H3R5ViacPUBfmRMVBgMBTdNB", // Your 3rd API key here (if you have one)
+            "6KaQgxGj8eNC5sUUsEwWDAiR"  // Your 4th API key here (if you have one)
+            // Add more keys as needed
+        ];
+
+        let currentKeyIndex = 0; // Index to keep track of which API key to use next
+
+        // Event listener for file input change: updates UI with file name and enables button
+        imageUpload.addEventListener('change', (event) => {
+            uploadedFile = event.target.files[0];
+            if (uploadedFile) {
+                fileNameDisplay.textContent = `Selected: ${uploadedFile.name}`;
+                removeBgBtn.disabled = false; // Enable the remove background button
+                resetResultArea(); // Clear any previous results or errors
+            } else {
+                fileNameDisplay.textContent = '';
+                removeBgBtn.disabled = true;
+            }
+        });
+
+        // Event listeners for drag and drop functionality on the file input label
+        const fileInputLabel = document.querySelector('.file-input-label');
+        fileInputLabel.addEventListener('dragover', (event) => {
+            event.preventDefault(); // Prevent default to allow drop
+            fileInputLabel.classList.add('border-indigo-600', 'bg-indigo-50'); // Add visual feedback for drag over
+        });
+
+        fileInputLabel.addEventListener('dragleave', () => {
+            fileInputLabel.classList.remove('border-indigo-600', 'bg-indigo-50'); // Remove visual feedback on drag leave
+        });
+
+        fileInputLabel.addEventListener('drop', (event) => {
+            event.preventDefault();
+            fileInputLabel.classList.remove('border-indigo-600', 'bg-indigo-50');
+            uploadedFile = event.dataTransfer.files[0]; // Get the dropped file
+            if (uploadedFile) {
+                imageUpload.files = event.dataTransfer.files; // Assign the dropped file to the input element
+                fileNameDisplay.textContent = `Selected: ${uploadedFile.name}`;
+                removeBgBtn.disabled = false;
+                resetResultArea();
+            }
+        });
+
+        // Function to reset the display area for results and errors
+        function resetResultArea() {
+            resultContainer.classList.add('hidden'); // Hide the result container
+            outputImage.src = '#'; // Clear the image source
+            outputImage.classList.add('hidden'); // Hide the image element
+            messageDisplay.textContent = ''; // Clear any messages
+            downloadBtn.disabled = true; // Disable the download button
+            errorContainer.classList.add('hidden'); // Hide the error container
+            errorMessageDisplay.textContent = ''; // Clear any error messages
+        }
+
+        // Function to dynamically set the max-height of the output image for responsiveness
+        function setOutputImageMaxHeight() {
+            const viewportHeight = window.innerHeight;
+            // Calculate max-height: 70% of viewport height, up to a maximum of 450px
+            outputImage.style.maxHeight = `${Math.min(viewportHeight * 0.7, 450)}px`;
+        }
+
+        // Add event listeners to call setOutputImageMaxHeight on load and window resize
+        window.addEventListener('load', setOutputImageMaxHeight);
+        window.addEventListener('resize', setOutputImageMaxHeight);
+
+        /**
+         * Attempts to remove the background of an image using a specific API key.
+         * @param {File} file The image file to process.
+         * @param {string} apiKey The remove.bg API key to use.
+         * @returns {Promise<string|null>} A promise that resolves with the image URL if successful, null otherwise.
+         */
+        async function processImageWithKey(file, apiKey) {
+            const apiUrl = "https://api.remove.bg/v1.0/removebg";
+            const formData = new FormData();
+            formData.append('image_file', file);
+            formData.append('size', 'auto'); // 'auto' for best quality, or 'preview' for faster but lower quality
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'X-Api-Key': apiKey
+                    },
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const blob = await response.blob();
+                    return URL.createObjectURL(blob);
+                } else {
+                    const errorData = await response.json();
+                    let errorMessage = 'An unknown API error occurred.';
+                    if (errorData && errorData.errors && errorData.errors.length > 0) {
+                        errorMessage = errorData.errors[0].title || errorMessage;
+                    }
+                    console.error(`API Error with key: ${apiKey.substring(0, 5)}...`, errorMessage, response.status);
+                    return null; // Indicate failure
+                }
+            } catch (error) {
+                console.error(`Fetch error with key: ${apiKey.substring(0, 5)}...`, error);
+                return null; // Indicate failure
+            }
+        }
+
+        // Event listener for the "Remove Background" button click
+        removeBgBtn.addEventListener('click', async () => {
+            if (!uploadedFile) {
+                displayError('Please select an image first.');
+                return;
+            }
+
+            // Set UI to loading state
+            removeBgBtn.disabled = true;
+            downloadBtn.disabled = true;
+            buttonText.textContent = 'Processing...';
+            loadingSpinner.classList.remove('hidden');
+            resetResultArea(); // Clear previous results before processing
+
+            let success = false;
+            let finalErrorMessage = 'Failed to remove background after trying all available API keys. Please check your keys or try again later.';
+
+            // If no API keys are provided in the array, warn the user.
+            if (apiKeys.length === 0 || apiKeys.every(key => key.trim() === "")) {
+                displayError('No remove.bg API keys found. Please add your keys in the JavaScript code.');
+                // Reset button state
+                removeBgBtn.disabled = false;
+                buttonText.textContent = 'Remove Background';
+                loadingSpinner.classList.add('hidden');
+                return;
+            }
+
+            // Loop through the API keys, starting from the current index
+            for (let i = 0; i < apiKeys.length; i++) {
+                const keyToUse = apiKeys[currentKeyIndex];
+                
+                // Advance the index for the next attempt
+                currentKeyIndex = (currentKeyIndex + 1) % apiKeys.length;
+
+                if (keyToUse.trim() === "") {
+                    console.warn(`Skipping empty API key at index ${currentKeyIndex}.`);
+                    continue; // Skip empty keys
+                }
+
+                console.log(`Attempting with API key ending in: ${keyToUse.substring(keyToUse.length - 5)}`);
+
+                const imageUrl = await processImageWithKey(uploadedFile, keyToUse);
+                if (imageUrl) {
+                    outputImage.src = imageUrl;
+                    outputImage.classList.remove('hidden');
+                    resultContainer.classList.remove('hidden');
+                    downloadBtn.disabled = false;
+                    messageDisplay.classList.add('hidden');
+                    setOutputImageMaxHeight();
+                    success = true;
+                    break; // Exit loop on first successful attempt
+                } else {
+                    // Update final error message if a specific error occurred (e.g., 400 or 403)
+                    // Note: full error details for each key are logged in processImageWithKey
+                    if (i === apiKeys.length - 1) { // If this is the last key being tried
+                        const lastResponse = await fetch("https://api.remove.bg/v1.0/removebg", {
+                            method: 'POST',
+                            headers: { 'X-Api-Key': keyToUse },
+                            body: formData // Re-use formData for status checking
+                        });
+                        if (!lastResponse.ok) {
+                            const lastErrorData = await lastResponse.json();
+                            if (lastErrorData && lastErrorData.errors && lastErrorData.errors.length > 0) {
+                                finalErrorMessage = lastErrorData.errors[0].title || finalErrorMessage;
+                            } else if (lastResponse.status === 403) {
+                                finalErrorMessage = 'All API Keys failed or are invalid. Please check your remove.bg API Keys.';
+                            } else if (lastResponse.status === 400) {
+                                finalErrorMessage = 'The image might be too large or the format is not supported.';
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (!success) {
+                displayError(finalErrorMessage);
+            }
+
+            // Reset button state regardless of success or failure
+            removeBgBtn.disabled = false;
+            buttonText.textContent = 'Remove Background';
+            loadingSpinner.classList.add('hidden');
+        });
+
+        // Event listener for the "Download Image" button click
+        downloadBtn.addEventListener('click', () => {
+            if (outputImage.src && outputImage.src !== '#') {
+                const a = document.createElement('a'); // Create a temporary anchor element
+                a.href = outputImage.src; // Set its href to the image URL
+                a.download = `removed-bg-${uploadedFile ? uploadedFile.name : 'image'}.png`; // Set download file name
+                document.body.appendChild(a); // Append to body (required for Firefox)
+                a.click(); // Programmatically click the anchor to trigger download
+                document.body.removeChild(a); // Remove the temporary anchor
+            }
+        });
+
+        // Function to display error messages in the dedicated error container
+        function displayError(message) {
+            errorContainer.classList.remove('hidden'); // Show error container
+            errorMessageDisplay.textContent = message; // Set error message
+            resultContainer.classList.add('hidden'); // Hide result container
+            outputImage.src = '#'; // Clear image source
+            outputImage.classList.add('hidden'); // Hide image element
+            messageDisplay.textContent = ''; // Clear any general messages
+        }
+
+        // Initialize the app state when the page loads
+        resetResultArea();
+    </script>
+</body>
+</html>
